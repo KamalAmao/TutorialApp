@@ -1,8 +1,9 @@
 package com.thatblackbwoy.tutorialapplication.service;
 
+import com.thatblackbwoy.tutorialapplication.dto.TutorialDetailsDto;
 import com.thatblackbwoy.tutorialapplication.dto.TutorialDto;
 import com.thatblackbwoy.tutorialapplication.dto.response.ApiResponse;
-import com.thatblackbwoy.tutorialapplication.model.Tutorial;
+
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface TutorialService {
 //    List<Tutorial> searchTutorials(String title);
     ApiResponse getAllPublished();
     ApiResponse deleteTutorial(long id);
+    ApiResponse createTutorialDetails(long tutorialId, TutorialDetailsDto tutorialDetailsDto);
 //    ApiResponse deleteAll(Tutorial tutorial);
 //    ApiResponse deleteAllTutorials();
 

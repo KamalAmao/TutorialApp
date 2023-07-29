@@ -1,14 +1,18 @@
 package com.thatblackbwoy.tutorialapplication.service.impl;
 
+import com.thatblackbwoy.tutorialapplication.dto.TutorialDetailsDto;
 import com.thatblackbwoy.tutorialapplication.dto.TutorialDto;
 import com.thatblackbwoy.tutorialapplication.dto.response.ApiResponse;
 import com.thatblackbwoy.tutorialapplication.model.Tutorial;
+import com.thatblackbwoy.tutorialapplication.model.TutorialDetails;
 import com.thatblackbwoy.tutorialapplication.repository.TutorialRepository;
+import com.thatblackbwoy.tutorialapplication.repository.TutorialsDetailsRepository;
 import com.thatblackbwoy.tutorialapplication.service.TutorialService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,6 +20,7 @@ import java.util.List;
 @Slf4j
 public class TutorialServiceImpl implements TutorialService {
     private final TutorialRepository tutorialRepository;
+    private final TutorialsDetailsRepository tutorialsDetailsRepository;
     @Override
     public ApiResponse createTutorial(TutorialDto tutorialDto) {
          Tutorial tutorial = Tutorial.builder()
@@ -87,6 +92,23 @@ public class TutorialServiceImpl implements TutorialService {
                     .build();
         }
         return null;
+    }
+
+    @Override
+    public ApiResponse createTutorialDetails(long tutorialId, TutorialDetailsDto tutorialDetailsDto) {
+        Tutorial tutorial = tutorialRepository.findById(tutorialId).orElseThrow(()-> new RuntimeException());
+        TutorialDetails tutorialDetails = TutorialDetails.builder()
+                .createdOn(new Date())
+                .createdBy(tutorialDetailsDto.getCreatedBy())
+                .tutorial(tutorial)
+                .build();
+        tutorialsDetailsRepository.save(tutorialDetails);
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Created tutorial details successfully")
+                .data(tutorial)
+                .build();
     }
 
 //    @Override

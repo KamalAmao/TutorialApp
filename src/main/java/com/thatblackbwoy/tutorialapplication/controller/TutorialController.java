@@ -1,8 +1,9 @@
 package com.thatblackbwoy.tutorialapplication.controller;
 
+import com.thatblackbwoy.tutorialapplication.dto.TutorialDetailsDto;
 import com.thatblackbwoy.tutorialapplication.dto.TutorialDto;
 import com.thatblackbwoy.tutorialapplication.dto.response.ApiResponse;
-import com.thatblackbwoy.tutorialapplication.model.Tutorial;
+
 import com.thatblackbwoy.tutorialapplication.service.TutorialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -76,6 +77,17 @@ public class TutorialController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
         }
+    }
+
+//    POST	/api/v1/tutorials/:id/details	create new Details for a Tutorial //create details for tutorial with this particular id
+    @PostMapping("/tutorials/{tutorialId}/details")
+    public ResponseEntity <ApiResponse> createTutorialDetails(@PathVariable long tutorialId, @RequestBody TutorialDetailsDto tutorialDetailsDto){
+        try{
+            return ResponseEntity.ok().body(tutorialService.createTutorialDetails(tutorialId, tutorialDetailsDto));
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
+        }
+
     }
 //    @DeleteMapping("/{id}")
 //    public  ResponseEntity<ApiResponse> deleteTutorialById(@PathVariable long id){
