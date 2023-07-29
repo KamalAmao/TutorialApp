@@ -1,0 +1,23 @@
+TEST*.xml
+
+# Generated fileBytes MacOS
+.DS_Store
+
+# Generated fileBytes Windows
+Thumbs.db
+
+# Applications
+*.app
+*.exe
+*.war
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+
+### VS Code ###
+.vscode/
