@@ -64,11 +64,14 @@ public class TutorialServiceImpl implements TutorialService {
             log.info("Updated record persisted {}", response);
             return ApiResponse.builder()
                     .success(true)
-                    .message("Updated")
+                    .message("Tutorial successfully updated")
                     .data(response)
                     .build();
         }else{
-            return null;
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("Your tutorial cannot be updated because you are yet to publish it")
+                    .build();
         }
     }
     @Override
@@ -81,7 +84,6 @@ public class TutorialServiceImpl implements TutorialService {
             return  ApiResponse.builder()
                     .success(true)
                     .message("Tutorial with id " +id+ " Deleted")
-                    .data(tutorialRepository.findAll())
                     .build();
         }
         return null;
