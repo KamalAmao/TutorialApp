@@ -89,6 +89,38 @@ public class TutorialController {
         }
 
     }
+    @PutMapping("/tutorials/{tutorialId}/details")
+    public ResponseEntity<ApiResponse> updateTutorialDetails(@PathVariable long tutorialId, @RequestBody TutorialDetailsDto tutorialDetailsDto){
+        try{
+            return ResponseEntity.ok().body(tutorialService.updateTutorialDetails(tutorialId, tutorialDetailsDto));
+        }catch (Exception e){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
+        }
+    }
+    @GetMapping("/tutorials/details")
+    public ResponseEntity<ApiResponse> getAllTutorialDetails(){
+        try {
+            return ResponseEntity.ok().body(tutorialService.getAllTutorialDetails());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
+        }
+    }
+    @GetMapping("/search/details")
+    public ResponseEntity<ApiResponse> searchTutorialDetailsContainingAuthorsLike(@RequestParam String createdBy){
+        try{
+            return ResponseEntity.ok().body(tutorialService.searchTutorialDetailsContainingAuthorsLike(createdBy));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
+        }
+    }
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<ApiResponse> deleteTutorialDetailsById(@PathVariable long tutorialId){
+//        try{
+//            return ResponseEntity.ok().body(tutorialService.deleteTutorialDetailsById(tutorialId));
+//        }catch(Exception e){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
+//        }
+//    }
 //    @DeleteMapping("/{id}")
 //    public  ResponseEntity<ApiResponse> deleteTutorialById(@PathVariable long id){
 //        try{

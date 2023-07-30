@@ -10,6 +10,7 @@ import com.thatblackbwoy.tutorialapplication.repository.TutorialsDetailsReposito
 import com.thatblackbwoy.tutorialapplication.service.TutorialService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -91,38 +92,15 @@ public class TutorialServiceImpl implements TutorialService {
                     .message("Tutorial with id " +id+ " Deleted")
                     .build();
         }
-        return null;
-    }
-
-    @Override
-    public ApiResponse createTutorialDetails(long tutorialId, TutorialDetailsDto tutorialDetailsDto) {
-        Tutorial tutorial = tutorialRepository.findById(tutorialId).orElseThrow(()-> new RuntimeException());
-        TutorialDetails tutorialDetails = TutorialDetails.builder()
-                .createdOn(new Date())
-                .createdBy(tutorialDetailsDto.getCreatedBy())
-                .tutorial(tutorial)
-                .build();
-        tutorialsDetailsRepository.save(tutorialDetails);
-
         return ApiResponse.builder()
-                .success(true)
-                .message("Created tutorial details successfully")
-                .data(tutorial)
+                .success(false)
+                .message("Tutorial with id " +id+ " not found")
                 .build();
     }
-
-//    @Override
-//    public ApiResponse deleteAll(Tutorial tutorial) {
-//        List<Tutorial> tutorials = tutorialRepository.findAll();
-//        if(tutorialRepository.)
-//        return tutorialRepository.deleteAll();
-//
-//    }
-
     @Override
     public ApiResponse searchTutorialsContainingTitleLike(String title) {
         List<Tutorial> tutorials = tutorialRepository.findByTitleContaining(title);
-        log.info("Retrieved all tutorials containing title " +title+ " {}", tutorials);
+        log.info("Retrieved all tutorials containing " +title+ " {}", tutorials);
 
         return ApiResponse.builder()
                 .success(true)
@@ -142,6 +120,72 @@ public class TutorialServiceImpl implements TutorialService {
                 .data(tutorials)
                 .build();
     }
+    @Override
+    public ApiResponse createTutorialDetails(long tutorialId, TutorialDetailsDto tutorialDetailsDto) {
+        Tutorial tutorial = tutorialRepository.findById(tutorialId).orElseThrow(()-> new RuntimeException());
+        TutorialDetails tutorialDetails = TutorialDetails.builder()
+                .createdOn(new Date())
+                .createdBy(tutorialDetailsDto.getCreatedBy())
+                .tutorial(tutorial)
+                .build();
+        tutorialsDetailsRepository.save(tutorialDetails);
+
+        return ApiResponse.builder()
+                .success(true)
+                .message("Tutorial details created successfully")
+                .data(tutorial)
+                .build();
+    }
+    @Override
+    public ApiResponse updateTutorialDetails(long tutorialId, TutorialDetailsDto tutorialDetailsDto){
+//        Tutorial tutorial = tutorialRepository.findById(tutorialId).orElseThrow(()-> new RuntimeException());
+        TutorialDetails tutorialDetails = tutorialsDetailsRepository.findById(tutorialId).orElseThrow(()-> new RuntimeException());
+//        if(tutorialDetails != null) {
+        tutorialDetails.setCreatedBy(tutorialDetailsDto.getCreatedBy());
+        TutorialDetails response = tutorialsDetailsRepository.save(tutorialDetails);
+        return ApiResponse.builder()
+                .success(true)
+                .message("Tutorial details updated successfully")
+                .data(response)
+                .build();
+    }
+    @Override
+    public ApiResponse getAllTutorialDetails() {
+        List<TutorialDetails> tutorials = tutorialsDetailsRepository.findAll();
+        log.info("All tutorial details successfully retrieved {}", tutorials);
+        return ApiResponse.builder()
+                .success(true)
+                .message("All tutorial details successfully retrieved")
+                .data(tutorials)
+                .build();
+    }
+
+    @Override
+    public ApiResponse searchTutorialDetailsContainingAuthorsLike(String createdBy) {
+        List<TutorialDetails> tutorialDetails = tutorialsDetailsRepository.findByCreatedByContaining(createdBy);
+        log.info("Successfully retrieved all tutorial details with author name containing  " +createdBy+ " {}", tutorialDetails);
+        return ApiResponse.builder()
+                .success(true)
+                .message("Successfully retrieved all tutorial details with author name containing " +createdBy+ "")
+                .data(tutorialDetails)
+                .build();
+    }
+
+//    @Override
+//    public ApiResponse deleteTutorialDetailsById(long tutorialId) {
+//        tutorialsDetailsRepository.deleteByTutorialId(tutorialId);
+//        return ApiResponse.builder()
+//                .success(true)
+//                .message("Tutorial details with id " +tutorialId+ " has been deleted")
+//                .build();
+//    }
+    //    @Override
+//    public ApiResponse deleteAll(Tutorial tutorial) {
+//        List<Tutorial> tutorials = tutorialRepository.findAll();
+//        if(tutorialRepository.)
+//        return tutorialRepository.deleteAll();
+//
+//    }
     //    @Override
 //    public ApiResponse deleteAllTutorials() {
 //        Tutorial tutorial = tutorialRepository.delete(tutorialRepo);

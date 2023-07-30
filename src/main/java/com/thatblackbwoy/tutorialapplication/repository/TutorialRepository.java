@@ -10,6 +10,7 @@ import java.util.List;
 public interface TutorialRepository extends JpaRepository<Tutorial, Long>{
     List<Tutorial> findByTitleContaining(String title);
     List<Tutorial> findByPublished(boolean published);
+
 //    List<Tutorial> deleteTutorialById(long id);
 //    void deleteTutorialById();
 }

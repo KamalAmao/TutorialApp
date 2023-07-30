@@ -18,6 +18,10 @@ public interface TutorialService {
     ApiResponse getAllPublished();
     ApiResponse deleteTutorial(long id);
     ApiResponse createTutorialDetails(long tutorialId, TutorialDetailsDto tutorialDetailsDto);
+    ApiResponse updateTutorialDetails(long tutorialId, TutorialDetailsDto tutorialDetailsDto);
+    ApiResponse getAllTutorialDetails();
+    ApiResponse searchTutorialDetailsContainingAuthorsLike(String createdBy);
+//    ApiResponse deleteTutorialDetailsById(long tutorialId);
 //    ApiResponse deleteAll(Tutorial tutorial);
 //    ApiResponse deleteAllTutorials();
 

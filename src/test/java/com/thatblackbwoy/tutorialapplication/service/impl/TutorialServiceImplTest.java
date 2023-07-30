@@ -3,7 +3,9 @@ package com.thatblackbwoy.tutorialapplication.service.impl;
 import com.thatblackbwoy.tutorialapplication.dto.TutorialDto;
 import com.thatblackbwoy.tutorialapplication.dto.response.ApiResponse;
 import com.thatblackbwoy.tutorialapplication.model.Tutorial;
+import com.thatblackbwoy.tutorialapplication.model.TutorialDetails;
 import com.thatblackbwoy.tutorialapplication.repository.TutorialRepository;
+import com.thatblackbwoy.tutorialapplication.repository.TutorialsDetailsRepository;
 import com.thatblackbwoy.tutorialapplication.service.TutorialService;
 import org.assertj.core.api.Descriptable;
 import org.hibernate.sql.Update;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBeans;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +33,9 @@ class TutorialServiceImplTest {
 
     @MockBean
     private TutorialRepository tutorialRepository;
+
+    @MockBean
+    private TutorialsDetailsRepository tutorialsDetailsRepository;
 
     @Autowired
     private TutorialServiceImpl tutorialService;
@@ -72,7 +78,7 @@ class TutorialServiceImplTest {
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
-                .message("Tutorials available")
+                .message("Retrieved all tutorials")
                 .data(expectedResponse)
                 .build();
 
@@ -104,7 +110,7 @@ class TutorialServiceImplTest {
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
-                .message("Updated")
+                .message("Tutorial details updated successfully")
                 .data(expectedResponse)
                 .build();
         when(tutorialRepository.save(tutorial)).thenReturn(expectedResponse);
@@ -144,6 +150,28 @@ class TutorialServiceImplTest {
         ApiResponse actualResponse =  tutorialService.searchTutorialsContainingTitleLike(expectedResponse.toString());
         assertEquals(expectedApiResponse, actualResponse);
     }
+    @Test
+    void getAllTutorialDetails() {
+        List<TutorialDetails> expectedResponse = Stream.of(
+                new TutorialDetails(1, new Date(), "Author 1", new Tutorial()),
+                new TutorialDetails(2, new Date(), "Author 2", new Tutorial())
+        ).collect(Collectors.toList());
+
+        ApiResponse expectedApiResponse = ApiResponse.builder()
+                .success(true)
+                .message("All tutorial details successfully retrieved")
+                .data(expectedResponse)
+                .build();
+
+        when(tutorialsDetailsRepository.findAll()).thenReturn(expectedResponse);
+        ApiResponse actualResponse = tutorialService.getAllTutorialDetails();
+        assertEquals(expectedApiResponse, actualResponse);
+//        List<TutorialDetails> actualSize = (List<Tutorial>) actualResponse.getData();
+//        assertEquals(2, actualSize.size());
+    }
+//    @Test
+//    void deleteTutorialDetails(){
+//    }
 
 //    @Test
 //    void removeTutorial(){
