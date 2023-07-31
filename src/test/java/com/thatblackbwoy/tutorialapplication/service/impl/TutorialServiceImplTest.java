@@ -1,11 +1,13 @@
 package com.thatblackbwoy.tutorialapplication.service.impl;
 
+import com.thatblackbwoy.tutorialapplication.dto.TutorialDetailsDto;
 import com.thatblackbwoy.tutorialapplication.dto.TutorialDto;
 import com.thatblackbwoy.tutorialapplication.dto.response.ApiResponse;
 import com.thatblackbwoy.tutorialapplication.model.Tutorial;
 import com.thatblackbwoy.tutorialapplication.model.TutorialDetails;
 import com.thatblackbwoy.tutorialapplication.repository.TutorialRepository;
 import com.thatblackbwoy.tutorialapplication.repository.TutorialsDetailsRepository;
+import com.thatblackbwoy.tutorialapplication.service.TutorialDetailsService;
 import com.thatblackbwoy.tutorialapplication.service.TutorialService;
 import org.assertj.core.api.Descriptable;
 import org.hibernate.sql.Update;
@@ -39,6 +41,9 @@ class TutorialServiceImplTest {
 
     @Autowired
     private TutorialServiceImpl tutorialService;
+
+    @Autowired
+    private TutorialDetailsServiceImpl tutorialDetailsService;
     /*
     (PMCVA)
     Prepare Test Data
@@ -134,11 +139,11 @@ class TutorialServiceImplTest {
         assertEquals(expectedApiResponse, actualResponse);
     }
     @Test
-    void searchTutorialsContainingTitleLike(){
+    void searchTutorialsContainingTitleLike(){ //explicit
         List<Tutorial> expectedResponse = Stream.of(
-                new Tutorial(1, "Title A", "Description A", true),
-                new Tutorial(2, "Title B", "Description B", true)).collect(Collectors.toList());
-        //Tutorial expectedResponse = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
+                new Tutorial(1, "Title A", "Description A", true)
+               ).collect(Collectors.toList());
+//        Tutorial expectedResponse = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
@@ -146,10 +151,30 @@ class TutorialServiceImplTest {
                 .data(expectedResponse)
                 .build();
 
-        when(tutorialRepository.findByTitleContaining(expectedResponse.toString())).thenReturn(expectedResponse);
-        ApiResponse actualResponse =  tutorialService.searchTutorialsContainingTitleLike(expectedResponse.toString());
+        when(tutorialRepository.findByTitleContaining("Title A")).thenReturn(expectedResponse);
+        ApiResponse actualResponse =  tutorialService.searchTutorialsContainingTitleLike("Title A");
         assertEquals(expectedApiResponse, actualResponse);
     }
+//    @Test
+//    void createTutorialDetails(){
+//        TutorialDetails tutorialDetails = TutorialDetails.builder().createdOn(new Date()).createdBy("kamal").tutorial(Tutorial.builder().id(1).title("").description("").published(true).build()).build();
+//        TutorialDetails expectedResponse = TutorialDetails.builder().id(1).createdOn(new Date()).createdBy("kamal").tutorial(Tutorial.builder().id(1).title("").description("").published(true).build()).build();
+//
+//        ApiResponse expectedApiResponse = ApiResponse.builder()
+//                .success(true)
+//                .message("Your tutorial has been published")
+//                .data(Tutorial.builder()
+//                        .id(1)
+//                        .title("Title A")
+//                        .description("Description A")
+//                        .published(true)
+//                        .build())
+//                .build();
+//
+//        when(tutorialsDetailsRepository.save(tutorialDetails)).thenReturn(expectedResponse); //mock dependencies
+//        ApiResponse actualResponse = tutorialDetailsService.createTutorialDetails(1, new TutorialDetailsDto(new Date(), "kamal"));
+//        assertEquals(expectedApiResponse, actualResponse);
+//    }
     @Test
     void getAllTutorialDetails() {
         List<TutorialDetails> expectedResponse = Stream.of(
@@ -164,7 +189,7 @@ class TutorialServiceImplTest {
                 .build();
 
         when(tutorialsDetailsRepository.findAll()).thenReturn(expectedResponse);
-        ApiResponse actualResponse = tutorialService.getAllTutorialDetails();
+        ApiResponse actualResponse = tutorialDetailsService.getAllTutorialDetails();
         assertEquals(expectedApiResponse, actualResponse);
 //        List<TutorialDetails> actualSize = (List<Tutorial>) actualResponse.getData();
 //        assertEquals(2, actualSize.size());
