@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
 public class TutorialController {
     private final TutorialService tutorialService;
 
@@ -26,7 +25,6 @@ public class TutorialController {
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
         }
-
     }
     @GetMapping("/tutorials")
     public ResponseEntity<ApiResponse> getAllTutorial(){
@@ -35,7 +33,6 @@ public class TutorialController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
         }
-
     }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable long id){
@@ -70,57 +67,16 @@ public class TutorialController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
         }
     }
-    @DeleteMapping("/{id}")
-    public  ResponseEntity<ApiResponse> deleteTutorial(@PathVariable long id) {
+    @DeleteMapping("/{tutorialId}")
+    public  ResponseEntity<ApiResponse> deleteTutorial(@PathVariable long tutorialId) {
         try {
-            return ResponseEntity.ok().body(tutorialService.deleteTutorial(id));
+            return ResponseEntity.ok().body(tutorialService.deleteTutorialById(tutorialId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
         }
     }
 
-//    POST	/api/v1/tutorials/:id/details	create new Details for a Tutorial //create details for tutorial with this particular id
-    @PostMapping("/tutorials/{tutorialId}/details")
-    public ResponseEntity <ApiResponse> createTutorialDetails(@PathVariable long tutorialId, @RequestBody TutorialDetailsDto tutorialDetailsDto){
-        try{
-            return ResponseEntity.ok().body(tutorialService.createTutorialDetails(tutorialId, tutorialDetailsDto));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
-        }
 
-    }
-    @PutMapping("/tutorials/{tutorialId}/details")
-    public ResponseEntity<ApiResponse> updateTutorialDetails(@PathVariable long tutorialId, @RequestBody TutorialDetailsDto tutorialDetailsDto){
-        try{
-            return ResponseEntity.ok().body(tutorialService.updateTutorialDetails(tutorialId, tutorialDetailsDto));
-        }catch (Exception e){
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
-        }
-    }
-    @GetMapping("/tutorials/details")
-    public ResponseEntity<ApiResponse> getAllTutorialDetails(){
-        try {
-            return ResponseEntity.ok().body(tutorialService.getAllTutorialDetails());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
-        }
-    }
-    @GetMapping("/search/details")
-    public ResponseEntity<ApiResponse> searchTutorialDetailsContainingAuthorsLike(@RequestParam String createdBy){
-        try{
-            return ResponseEntity.ok().body(tutorialService.searchTutorialDetailsContainingAuthorsLike(createdBy));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
-        }
-    }
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<ApiResponse> deleteTutorialDetailsById(@PathVariable long tutorialId){
-//        try{
-//            return ResponseEntity.ok().body(tutorialService.deleteTutorialDetailsById(tutorialId));
-//        }catch(Exception e){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
-//        }
-//    }
 //    @DeleteMapping("/{id}")
 //    public  ResponseEntity<ApiResponse> deleteTutorialById(@PathVariable long id){
 //        try{

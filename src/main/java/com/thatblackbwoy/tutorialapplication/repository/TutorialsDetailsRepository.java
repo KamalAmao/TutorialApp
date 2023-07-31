@@ -15,6 +15,9 @@ public interface TutorialsDetailsRepository extends JpaRepository<TutorialDetail
 
     @Transactional
     void deleteByTutorialId(long tutorialId);
+
+    @Transactional
+    void deleteTutorialDetailsByTutorialId(Long tutorialId);
     List<TutorialDetails> findByCreatedByContaining(String createdBy);
 //    TutorialDetails updateTutorialDetailsById(long tutorialId, TutorialDetailsDto tutorialDetailsDto);
 //    @Transactional
