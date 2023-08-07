@@ -5,6 +5,7 @@ import com.thatblackbwoy.tutorialapplication.dto.TutorialDto;
 import com.thatblackbwoy.tutorialapplication.dto.response.ApiResponse;
 import com.thatblackbwoy.tutorialapplication.model.Tutorial;
 import com.thatblackbwoy.tutorialapplication.model.TutorialDetails;
+import com.thatblackbwoy.tutorialapplication.repository.CommentRepository;
 import com.thatblackbwoy.tutorialapplication.repository.TutorialRepository;
 import com.thatblackbwoy.tutorialapplication.repository.TutorialsDetailsRepository;
 import com.thatblackbwoy.tutorialapplication.service.TutorialService;
@@ -13,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+
 import java.util.List;
 
 @Service
@@ -21,6 +22,8 @@ import java.util.List;
 @Slf4j
 public class TutorialServiceImpl implements TutorialService {
     private final TutorialRepository tutorialRepository;
+    private final CommentRepository commentRepository;
+    private final TutorialsDetailsRepository tutorialsDetailsRepository;
     @Override
     public ApiResponse createTutorial(TutorialDto tutorialDto) {
          Tutorial tutorial = Tutorial.builder()
@@ -47,7 +50,7 @@ public class TutorialServiceImpl implements TutorialService {
                 .build();
     }
     @Override
-    public ApiResponse getById(long id) {
+    public ApiResponse getById(Long id) {
         Tutorial tutorial = tutorialRepository.findById(id).orElseThrow(()-> new RuntimeException("Tutorial with id " +id+ " is not present"));
         return ApiResponse.builder()
                 .success(true)
@@ -57,10 +60,10 @@ public class TutorialServiceImpl implements TutorialService {
     }
 
     @Override
-    public ApiResponse updateTutorial(long id, TutorialDto tutorialDto) {
+    public ApiResponse updateTutorial(Long id, TutorialDto tutorialDto) {
         //Tutorial tutorial = tutorialRepository.findById(id).get();
         Tutorial tutorial = tutorialRepository.findById(id).orElseThrow(()-> new RuntimeException("Tutorial with id " +id+ " is not present"));
-        if(tutorial.isPublished()){
+//        if(tutorial.isPublished()){
             tutorial.setTitle(tutorialDto.getTitle());
             tutorial.setDescription(tutorialDto.getDescription());
             tutorial.setPublished(tutorialDto.isPublished());
@@ -72,17 +75,17 @@ public class TutorialServiceImpl implements TutorialService {
                     .message("Tutorial successfully updated")
                     .data(response)
                     .build();
-        }else{
-            return ApiResponse.builder()
-                    .success(false)
-                    .message("Your tutorial cannot be updated because you are yet to publish it")
-                    .build();
-        }
+//        }else{
+//            return ApiResponse.builder()
+//                    .success(false)
+//                    .message("Your tutorial cannot be updated because you are yet to publish it")
+//                    .build();
+//        }
     }
     @Override
     public ApiResponse deleteTutorialById(Long tutorialId) {
-        List<Tutorial> tutorial =  tutorialRepository.findAll();
         //List<Tutorial> tutorials =  tutorialRepository.findAll();
+        Tutorial tutorial =  tutorialRepository.findById(tutorialId).orElseThrow(()-> new RuntimeException());
         tutorialRepository.deleteTutorialById(tutorialId);
         log.info("Tutorial with id " +tutorialId+ " Deleted {}", tutorial);
         return ApiResponse.builder()
@@ -113,73 +116,21 @@ public class TutorialServiceImpl implements TutorialService {
                 .data(tutorials)
                 .build();
     }
-
-    //    @Override
-//    public ApiResponse deleteAll(Tutorial tutorial) {
-//        List<Tutorial> tutorials = tutorialRepository.findAll();
-//        if(tutorialRepository.)
-//        return tutorialRepository.deleteAll();
-//
-//    }
-    //    @Override
-//    public ApiResponse deleteAllTutorials() {
-//        Tutorial tutorial = tutorialRepository.delete(tutorialRepo);
-//
-//        return ApiResponse.builder()
-//                .success(true)
-//                .message("All tutorials deleted")
-//                .data(tutorialRepository)
-//                .build();
-//    }
-
-    //    @Override
-//    public ApiResponse deleteTutorial(long id) {
-//        Tutorial tutorial =  tutorialRepository.findById(id).orElseThrow(()-> new RuntimeException("Tutorial with id " +id+ " is not present"));
-//        //List<Tutorial> tutorials =  tutorialRepository.findAll();
-//         if(tutorialRepository.existsById(id)){
-//             tutorialRepository.deleteById(id);
-//             log.info("Record deleted {}", tutorial);
-//             return  ApiResponse.builder()
-//                     .success(true)
-//                     .message("Tutorial with id " +id+ " Deleted")
-//                     .data(tutorial)
-//                     .build();
-//         }
-//        return null;
-//    }
+    @Override
+    public ApiResponse deleteTutorialAndAllItsCommentsAndDetailsById(Long tutorialId) {
+        Tutorial tutorial = tutorialRepository.findById(tutorialId).orElseThrow(()-> new RuntimeException());
+        commentRepository.deleteAllCommentsByTutorialId(tutorialId);
+        tutorialsDetailsRepository.deleteTutorialDetailsByTutorialId(tutorialId);
+        tutorialRepository.deleteTutorialById(tutorialId);
+        log.info("Tutorial and all its comments and details deleted", tutorial);
 
 
+        return ApiResponse.builder()
+                .success(true)
+                .message("Tutorial and all its comments and details deleted")
+                .build();
+    }
 
-//    @Override
-//    public ApiResponse deleteTutorialById(long id) {
-//         Tutorial tutorial = (Tutorial) tutorialRepository.deleteTutorialById(id);
-//            log.info("Tutorial with id " +id+ " removed {}", tutorial);
-//
-//            return ApiResponse.builder()
-//                    .success(true)
-//                    .message("Tutorial with id " +id+ " removed")
-//                    .data(tutorial)
-//                    .build();
-//    }
-
-//    @Override
-//    public ApiResponse checkPublished() {
-//        List<Tutorial> tutorials = tutorialRepository.findAll();
-//        if(tutorials.stream().filter(myTutorials -> myTutorials.isPublished()).equals(true)){
-//            tutorials.addAll(tutorials);
-////            tutorialRepository.findAll().stream().collect(Collectors.toList());
-////            tutorial.get(((List) tutorialRepository.findAll()).size());
-////            tutorial.stream().allMatch(Tutorial::isPublished);
-//
-//            log.info("Number of published tutorials {}", tutorials);
-//            return ApiResponse.builder()
-//                    .success(true)
-//                    .message("Get total Published")
-//                    .data(tutorials)
-//                    .build();
-//        }
-//        return null;
-//    }
 //    @Override
 //    public ApiResponse searchTutorialsContainingTitleLike(String title) {
 //

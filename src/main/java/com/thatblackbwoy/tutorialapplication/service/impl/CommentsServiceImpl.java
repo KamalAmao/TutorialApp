@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.xml.stream.events.Comment;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -40,9 +41,10 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public ApiResponse getByTutorialId(Long tutorialId) {
         List<Comments> comments = commentRepository.findByTutorialId(tutorialId);
+        log.info("All available comments retrieved successfully", comments);
         return ApiResponse.builder()
                 .success(true)
-                .message("Available comments")
+                .message("All available comments retrieved successfully")
                 .data(comments)
                 .build();
     }
@@ -70,22 +72,15 @@ public class CommentsServiceImpl implements CommentsService {
                 .message("Comment successfully deleted")
                 .build();
     }
-
     @Override
     public ApiResponse deleteAllCommentsOfATutorialByTutorialId(Long tutorialId) {
+        //Comments comment = tutorialRepository.findById(tutorialId);
         List<Comments> comments = commentRepository.findAll();
         commentRepository.deleteAllCommentsByTutorialId(tutorialId);
-        log.info("All comment deleted", comments);
+        log.info("All comments under tutorial with id " +tutorialId+ " deleted", comments);
         return ApiResponse.builder()
                 .success(true)
                 .message("All comments under tutorial with id " +tutorialId+ " deleted")
                 .build();
     }
-
-    @Override
-    public ApiResponse deleteTutorialAndItsComments(Long tutorialId) {
-        return null;
-    }
-
-
 }
