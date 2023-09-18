@@ -19,5 +19,4 @@ public interface CommentRepository extends JpaRepository<Comments, Long> {
     @Transactional
     void deleteAllCommentsByTutorialId(Long tutorialId);
 
-//    void
 }

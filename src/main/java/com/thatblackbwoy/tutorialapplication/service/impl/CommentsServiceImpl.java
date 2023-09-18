@@ -80,7 +80,7 @@ public class CommentsServiceImpl implements CommentsService {
         log.info("All comments under tutorial with id " +tutorialId+ " deleted", comments);
         return ApiResponse.builder()
                 .success(true)
-                .message("All comments under tutorial with id " +tutorialId+ " deleted")
+                .message("Record deleted")
                 .build();
     }
 }

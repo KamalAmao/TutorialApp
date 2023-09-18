@@ -11,6 +11,7 @@ import com.thatblackbwoy.tutorialapplication.service.TutorialDetailsService;
 import com.thatblackbwoy.tutorialapplication.service.TutorialService;
 import org.assertj.core.api.Descriptable;
 import org.hibernate.sql.Update;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,8 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class TutorialServiceImplTest {
@@ -56,13 +56,13 @@ class TutorialServiceImplTest {
     @Test
     void createTutorial() {
         Tutorial tutorial = Tutorial.builder().title("Title A").description("Description A").published(true).build();
-        Tutorial expectedResponse = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
+        Tutorial expectedResponse = Tutorial.builder().id(1L).title("Title A").description("Description A").published(true).build();
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
                 .message("Your tutorial has been published")
                 .data(Tutorial.builder()
-                        .id(1)
+                        .id(1L)
                         .title("Title A")
                         .description("Description A")
                         .published(true)
@@ -77,13 +77,13 @@ class TutorialServiceImplTest {
     @Test
     void getAllTutorial() {
         List<Tutorial> expectedResponse = Stream.of(
-                new Tutorial(1,"Title A", "Description A", true),
-                new Tutorial(2,"Title B", "Description B", true)
+                new Tutorial(1L,"Title A", "Description A", true),
+                new Tutorial(2L,"Title B", "Description B", true)
         ).collect(Collectors.toList());
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
-                .message("Retrieved all tutorials")
+                .message("All available tutorials has been successfully retrieved")
                 .data(expectedResponse)
                 .build();
 
@@ -96,37 +96,42 @@ class TutorialServiceImplTest {
 
     @Test
     void getById() {
-        Tutorial expectedResponse = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
+        Tutorial expectedResponse = Tutorial.builder().id(1L).title("Title A").description("Description A").published(true).build();
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
-                .message("get by id")
+                .message("Tutorial successfully retrieved")
                 .data(expectedResponse)
                 .build();
 
-        when(tutorialRepository.findById(expectedResponse.getId())).thenReturn(Optional.of(expectedResponse));
-        ApiResponse actualResponse = tutorialService.getById(expectedResponse.getId());
+        when(tutorialRepository.findById(1L)).thenReturn(Optional.ofNullable(expectedResponse));
+        ApiResponse actualResponse = tutorialService.getById(1L);
         assertEquals(expectedApiResponse, actualResponse);
     }
     @Test
     void updateTutorial(){
-        Tutorial tutorial = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
-        Tutorial expectedResponse = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
+        Tutorial tutorial = Tutorial.builder().title("Title A").description("Description A").build();
+         tutorial.setTitle("Title B");
+         tutorial.setDescription("Description B");
+         tutorial.setPublished(true);
+        Tutorial expectedResponse = Tutorial.builder().title("Title B").description("Description B").published(true).build();
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
-                .message("Tutorial details updated successfully")
+                .message("Tutorial successfully updated")
                 .data(expectedResponse)
                 .build();
+        when(tutorialRepository.findById(1L)).thenReturn(Optional.ofNullable(expectedResponse));
         when(tutorialRepository.save(tutorial)).thenReturn(expectedResponse);
-        ApiResponse actualResponse = tutorialService.updateTutorial(tutorial.getId(), new TutorialDto("Title B", "Description B", true));
+        ApiResponse actualResponse = tutorialService.updateTutorial(1L, new TutorialDto("Title B", "Description B", true));
         assertEquals(expectedApiResponse, actualResponse);
+
     }
     @Test
     void getPublished(){
         List<Tutorial> expectedResponse = Stream.of(
-                new Tutorial(1, "Title A", "Description A", true),
-                new Tutorial(2, "Title B", "Description B", true)).collect(Collectors.toList());
+                new Tutorial(1L, "Title A", "Description A", true),
+                new Tutorial(2L, "Title B", "Description B", true)).collect(Collectors.toList());
 
         ApiResponse expectedApiResponse = ApiResponse.builder()
                 .success(true)
@@ -141,7 +146,7 @@ class TutorialServiceImplTest {
     @Test
     void searchTutorialsContainingTitleLike(){ //explicit
         List<Tutorial> expectedResponse = Stream.of(
-                new Tutorial(1, "Title A", "Description A", true)
+                new Tutorial(1L, "Title A", "Description A", true)
                ).collect(Collectors.toList());
 //        Tutorial expectedResponse = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
 
@@ -155,26 +160,7 @@ class TutorialServiceImplTest {
         ApiResponse actualResponse =  tutorialService.searchTutorialsContainingTitleLike("Title A");
         assertEquals(expectedApiResponse, actualResponse);
     }
-//    @Test
-//    void createTutorialDetails(){
-//        TutorialDetails tutorialDetails = TutorialDetails.builder().createdOn(new Date()).createdBy("kamal").tutorial(Tutorial.builder().id(1).title("").description("").published(true).build()).build();
-//        TutorialDetails expectedResponse = TutorialDetails.builder().id(1).createdOn(new Date()).createdBy("kamal").tutorial(Tutorial.builder().id(1).title("").description("").published(true).build()).build();
-//
-//        ApiResponse expectedApiResponse = ApiResponse.builder()
-//                .success(true)
-//                .message("Your tutorial has been published")
-//                .data(Tutorial.builder()
-//                        .id(1)
-//                        .title("Title A")
-//                        .description("Description A")
-//                        .published(true)
-//                        .build())
-//                .build();
-//
-//        when(tutorialsDetailsRepository.save(tutorialDetails)).thenReturn(expectedResponse); //mock dependencies
-//        ApiResponse actualResponse = tutorialDetailsService.createTutorialDetails(1, new TutorialDetailsDto(new Date(), "kamal"));
-//        assertEquals(expectedApiResponse, actualResponse);
-//    }
+
     @Test
     void getAllTutorialDetails() {
         List<TutorialDetails> expectedResponse = Stream.of(
@@ -194,40 +180,51 @@ class TutorialServiceImplTest {
 //        List<TutorialDetails> actualSize = (List<Tutorial>) actualResponse.getData();
 //        assertEquals(2, actualSize.size());
     }
-//    @Test
-//    void deleteTutorialDetails(){
-//    }
+    @Test
+    void removeTutorial(){
+        Tutorial tutorial = Tutorial.builder().title("Title A").description("Description A").build();
+        //tutorialRepository.delete(tutorial);
+        tutorial.setId(1L);
+        //tutorialRepository.deleteTutorialById(1L);
+        ApiResponse expectedApiResponse = ApiResponse.builder()
+                .success(true)
+                .message("Record removed")
+                .build();
 
+        when(tutorialRepository.findById(1L)).thenReturn(Optional.of(tutorial));
+        doNothing().when(tutorialRepository).delete(tutorial);
+        ApiResponse actualResponse = tutorialService.deleteTutorialById(1L);
+        assertEquals(expectedApiResponse, actualResponse);
+    }
+    @Test
+    void deleteTutorialAndItsComments(){
+        Tutorial tutorial = Tutorial.builder().title("Title A").description("Description A").build();
+        tutorial.setId(1L);
+        ApiResponse expectedApiResponse = ApiResponse.builder()
+                .success(true)
+                .message("Tutorial and all its comments and details deleted")
+                .build();
+
+        when(tutorialRepository.findById(1L)).thenReturn(Optional.of(tutorial));
+        doNothing().when(tutorialRepository).delete(tutorial);
+        ApiResponse actualResponse = tutorialService.deleteTutorialAndAllItsCommentsAndDetailsById(1L);
+        assertEquals(expectedApiResponse, actualResponse);
+    }
 //    @Test
-//    void removeTutorial(){
-////        Tutorial expectedResponse = Tutorial.builder().id(1).title("Title A").description("Description A").published(true).build();
-//                List<Tutorial> expectedResponse = Stream.of(
-//                new Tutorial(1, "Title A", "Description A", true),
-//                new Tutorial(2, "Title B", "Description B", true)).collect(Collectors.toList());
+//    void createTutorialDetails(){
+//        Tutorial tutorial = Tutorial.builder().title("Title A").description("Description A").build();
+////        TutorialDetails tutorialDetails = TutorialDetails.builder().createdOn(new Date()).createdBy("kamal").tutorial(Tutorial.builder().id(1L).title("Title A").description("Description A").published(true).build()).build();
+////        TutorialDetails expectedResponse = TutorialDetails.builder().createdOn(new Date()).createdBy("kamal").tutorial(Tutorial.builder().id(1L).title("Title A").description("Description A").published(true).build()).build();
+//        TutorialDetails tutorialDetails = TutorialDetails.builder().createdOn(new Date()).createdBy("kamal").tutorial(tutorial).build();
+//        TutorialDetails expectedResponse = TutorialDetails.builder().Id(1L).createdOn(new Date()).createdBy("kamal").tutorial(tutorial).build();
 //        ApiResponse expectedApiResponse = ApiResponse.builder()
 //                .success(true)
-//                .message("Record removed")
+//                .message("Tutorial details created successfully")
 //                .data(expectedResponse)
 //                .build();
-//
-//        when(tutorialRepository.findById(expectedResponse.stream().findFirst().get().getId())).thenReturn();
-//        ApiResponse actualResponse = tutorialService.deleteTutorial(id);
+//        when(tutorialRepository.findById(1L)).thenReturn(Optional.ofNullable(tutorial));
+//        when(tutorialsDetailsRepository.save(tutorialDetails)).thenReturn(expectedResponse); //mock dependencies
+//        ApiResponse actualResponse = tutorialDetailsService.createTutorialDetails(1, new TutorialDetailsDto(new Date(), "kamal"));
 //        assertEquals(expectedApiResponse, actualResponse);
 //    }
-//    @Test
-//    void removeTutorial(){
-//        List<Tutorial> expectedResponse =  Stream.of(
-//                new Tutorial(1,"Title A", "Description A", true),
-//                new Tutorial(2,"Title B", "Description B", true)
-//        ).collect(Collectors.toList());
-//
-//        ApiResponse expectedApiResponse = ApiResponse.builder()
-//                .success(true)
-//                .message("Record removed")
-//                .data(expectedResponse)
-//                .build();
-//
-//            when(tutorialRepository.findById(expectedResponse.stream().filter(Tutorial::getId))).thenReturn(expectedResponse)
-//    }
-
 }

@@ -26,6 +26,10 @@ public class TutorialController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.builder().success(false).build());
         }
     }
+    @GetMapping("/welcome")
+    public ResponseEntity<String> welcome(){
+        return ResponseEntity.ok().body("Welcome");
+    }
     @GetMapping("/tutorials")
     public ResponseEntity<ApiResponse> getAllTutorial(){
         try {
@@ -75,7 +79,14 @@ public class TutorialController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
         }
     }
-
+    @DeleteMapping("tutorials/{tutorialId}")
+    public  ResponseEntity<ApiResponse> deleteTutorialAndItsCommentsById(@PathVariable Long tutorialId) {
+        try {
+            return ResponseEntity.ok().body(tutorialService.deleteTutorialAndAllItsCommentsAndDetailsById(tutorialId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.builder().success(false).build());
+        }
+    }
 
 //    @DeleteMapping("/{id}")
 //    public  ResponseEntity<ApiResponse> deleteTutorialById(@PathVariable long id){

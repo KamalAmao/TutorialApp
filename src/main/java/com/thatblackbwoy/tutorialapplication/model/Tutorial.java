@@ -20,7 +20,7 @@ import javax.persistence.*;
 public class Tutorial {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     private String title;
     private String description;
 //    @Column(name = "")

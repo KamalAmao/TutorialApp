@@ -10,4 +10,5 @@ public interface TutorialDetailsService {
     ApiResponse searchTutorialDetailsContainingAuthorsLike(String createdBy);
     ApiResponse deleteTutorialDetailsById(Long tutorialId);
 
+
 }

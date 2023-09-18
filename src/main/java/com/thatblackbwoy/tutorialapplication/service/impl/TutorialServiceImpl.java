@@ -45,16 +45,17 @@ public class TutorialServiceImpl implements TutorialService {
         log.info("All records {}", tutorials);
         return ApiResponse.builder()
                 .success(true)
-                .message("Tutorials available")
+                .message("All available tutorials has been successfully retrieved")
                 .data(tutorials)
                 .build();
     }
     @Override
     public ApiResponse getById(Long id) {
         Tutorial tutorial = tutorialRepository.findById(id).orElseThrow(()-> new RuntimeException("Tutorial with id " +id+ " is not present"));
+        log.info("Tutorial with id " +id+ "successfully retrieved", tutorial);
         return ApiResponse.builder()
                 .success(true)
-                .message("get by id")
+                .message("Tutorial successfully retrieved")
                 .data(tutorial)
                 .build();
     }
@@ -63,7 +64,6 @@ public class TutorialServiceImpl implements TutorialService {
     public ApiResponse updateTutorial(Long id, TutorialDto tutorialDto) {
         //Tutorial tutorial = tutorialRepository.findById(id).get();
         Tutorial tutorial = tutorialRepository.findById(id).orElseThrow(()-> new RuntimeException("Tutorial with id " +id+ " is not present"));
-//        if(tutorial.isPublished()){
             tutorial.setTitle(tutorialDto.getTitle());
             tutorial.setDescription(tutorialDto.getDescription());
             tutorial.setPublished(tutorialDto.isPublished());
@@ -75,12 +75,6 @@ public class TutorialServiceImpl implements TutorialService {
                     .message("Tutorial successfully updated")
                     .data(response)
                     .build();
-//        }else{
-//            return ApiResponse.builder()
-//                    .success(false)
-//                    .message("Your tutorial cannot be updated because you are yet to publish it")
-//                    .build();
-//        }
     }
     @Override
     public ApiResponse deleteTutorialById(Long tutorialId) {
@@ -90,7 +84,7 @@ public class TutorialServiceImpl implements TutorialService {
         log.info("Tutorial with id " +tutorialId+ " Deleted {}", tutorial);
         return ApiResponse.builder()
                     .success(true)
-                    .message("Tutorial with id " +tutorialId+ " Deleted")
+                    .message("Record removed")
                     .build();
     }
     @Override

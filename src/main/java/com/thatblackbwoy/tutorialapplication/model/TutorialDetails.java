@@ -14,12 +14,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tutorial_datails")
+@Table(name = "tutorial_details")
 @Builder
 
 public class TutorialDetails {
     @Id
-    private long id;
+    private long Id;
     private Date createdOn;
     private String createdBy;
 

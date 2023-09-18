@@ -9,5 +9,6 @@ public interface CommentsService {
     ApiResponse updateCommentById(Long commentId, CommentsDto commentsDto);
     ApiResponse deleteCommentById(Long commentId);
     ApiResponse deleteAllCommentsOfATutorialByTutorialId(Long tutorialId);
-    ApiResponse deleteTutorialAndItsComments(Long tutorialId);
+//    ApiResponse deleteTutorialAndItsComments(Long tutorialId);
+//    ApiResponse deleteTutorialAndItsCommentsById(Long tutorialId);
 }

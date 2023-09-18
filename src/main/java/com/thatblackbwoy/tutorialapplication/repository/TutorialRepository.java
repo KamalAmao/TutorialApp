@@ -11,6 +11,7 @@ import java.util.List;
 public interface TutorialRepository extends JpaRepository<Tutorial, Long>{
     List<Tutorial> findByTitleContaining(String title);
     List<Tutorial> findByPublished(boolean published);
+//    Tutorial findById(Long tutorialId);
 
 //    List<Tutorial> deleteTutorialById(long id);
 
@@ -18,4 +19,5 @@ public interface TutorialRepository extends JpaRepository<Tutorial, Long>{
     void deleteById(Long Id);
     @Transactional
     void deleteTutorialById(Long tutorialId);
+
 }
